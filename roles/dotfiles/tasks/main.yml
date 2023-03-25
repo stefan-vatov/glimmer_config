@@ -1,0 +1,6 @@
+---
+- import_tasks: revert.yml
+  tags: revert_dotfiles
+
+- import_tasks: setup.yml
+  tags: setup

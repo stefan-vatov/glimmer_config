@@ -1,0 +1,38 @@
+---
+- name: Check for existing dotfiles
+  ansible.builtin.stat:
+    path: "{{ ansible_env.HOME }}/{{ item }}"
+  register: dotfiles_status
+  loop: "{{ dotfiles_list }}"
+  tags:
+    - revert_dotfiles
+
+- name: Check if dotfiles are managed by Ansible
+  ansible.builtin.slurp:
+    src: "{{ ansible_env.HOME }}/{{ item.item }}"
+  register: managed_file_contents
+  loop: "{{ dotfiles_status.results }}"
+  when: item.stat.exists
+  tags: revert_dotfiles
+
+- name: Set is_managed flag for each dotfile
+  ansible.builtin.set_fact:
+    dotfiles_status: "{{ dotfiles_status.results | zip(managed_file_contents.results) | map('combine') | list }}"
+  tags: revert_dotfiles
+
+- name: Remove managed dotfiles
+  ansible.builtin.file:
+    path: "{{ item.stat.path }}"
+    state: absent
+  when: "item.stat.exists and ('# BEGIN Managed by Ansible - Do not modify this line' in (item.content | b64decode))"
+  loop: "{{ dotfiles_status }}"
+  tags:
+    - revert_dotfiles
+
+- name: Rename _legacy dotfiles back to original
+  ansible.builtin.command:
+    cmd: "mv {{ item.stat.path }}_legacy {{ item.stat.path }}"
+  when: "item.stat.exists and ('# BEGIN Managed by Ansible - Do not modify this line' in (item.content | b64decode))"
+  loop: "{{ dotfiles_status }}"
+  tags:
+    - revert_dotfiles

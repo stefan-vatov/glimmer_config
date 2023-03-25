@@ -1,0 +1,10 @@
+---
+- name: Glimmer Config - Setup localhost
+  hosts: localhost
+  connection: local
+  gather_facts: true
+  become: false
+
+  roles:
+    # - { role: homebrew_packages, tags: [setup] }
+    - { role: dotfiles }

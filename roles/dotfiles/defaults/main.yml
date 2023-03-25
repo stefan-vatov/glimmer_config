@@ -1,0 +1,5 @@
+---
+dotfiles_list:
+  - .bashrc
+  - .vimrc
+  - .zshrc

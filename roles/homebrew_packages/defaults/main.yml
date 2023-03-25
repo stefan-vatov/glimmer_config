@@ -1,0 +1,7 @@
+---
+homebrew_packages_list:
+  - fd
+  - ddosify/tap/ddosify
+  - just
+  - tree
+  - nvim
