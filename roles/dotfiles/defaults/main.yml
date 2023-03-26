@@ -3,7 +3,6 @@ dotfiles_list:
   - .bashrc
   - .vimrc
   - .zshrc
-  - .gitattributes
   - .gitconfig
   - .bash_profile
   - .gitmodules
