@@ -34,6 +34,12 @@
     - rust-lang.rust-analyzer
     - karunamurti.tera
     - github.copilot-labs
+    - tamasfe.even-better-toml
+    - github.vscode-pull-request-github
+    - github.github-vscode-theme
+    - orta.vscode-jest
+    - firsttris.vscode-jest-runner
+    - andys8.jest-snippets
   tags:
     - setup
     - vscode
