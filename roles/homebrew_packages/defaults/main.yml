@@ -23,7 +23,7 @@ homebrew_packages_list:
   - tmux
   - htop
   - autoconf
-  - wxmac
+#   - wxmac # to be revised
   - pre-commit
   - git-delta
   - neovim
