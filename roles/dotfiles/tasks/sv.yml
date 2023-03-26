@@ -18,6 +18,13 @@
   tags:
     - setup
 
+- name: Set up pre-commit hooks in the repository
+  ansible.builtin.command:
+    cmd: pre-commit install
+    chdir: "{{ ansible_env.HOME }}/.dotfiles/sv"
+  tags:
+    - setup
+
 - name: Use GNU Stow to link dotfiles
   ansible.builtin.command:
     cmd: stow -t {{ ansible_env.HOME }} -d {{ ansible_env.HOME }}/.dotfiles/sv -R . --ignore='.DS_Store'
