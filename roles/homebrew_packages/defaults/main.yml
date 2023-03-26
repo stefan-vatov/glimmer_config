@@ -5,3 +5,31 @@ homebrew_packages_list:
   - just
   - tree
   - nvim
+  - git
+  - gnupg
+  - jq
+  - "n"
+  - pinentry-mac
+  - protobuf
+  - ripgrep
+  - sqlite
+  - terraform
+  - wget
+  - coreutils
+  - bat
+  - fzf
+  - stow
+  - util-linux
+  - tmux
+  - htop
+  - autoconf
+  - wxmac
+  - pre-commit
+  - git-delta
+  - neovim
+  - starship
+
+cask_packages:
+  - alacritty
+  - amethyst
+  - handbrake

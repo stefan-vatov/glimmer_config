@@ -6,5 +6,5 @@
   become: false
 
   roles:
-    # - { role: homebrew_packages, tags: [setup] }
+    - { role: homebrew_packages, tags: [setup] }
     - { role: dotfiles }

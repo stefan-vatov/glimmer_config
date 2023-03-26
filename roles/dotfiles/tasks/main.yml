@@ -1,6 +1,16 @@
 ---
-- import_tasks: revert.yml
+- name: Revert dotfiles
+  ansible.builtin.include_tasks: revert.yml
   tags: revert_dotfiles
 
-- import_tasks: setup.yml
+- name: Handle legacy dotfiles
+  ansible.builtin.include_tasks: legacy.yml
+  tags: setup
+
+- name: Handle sv dotfiles
+  ansible.builtin.include_tasks: sv.yml
+  tags: setup
+
+- name: Link dotfiles
+  ansible.builtin.include_tasks: link.yml
   tags: setup

@@ -19,19 +19,21 @@
     dotfiles_status: "{{ dotfiles_status.results | zip(file_contents.results) | map('combine') | list }}"
   tags: setup
 
-- name: Rename existing dotfiles to _legacy
-  ansible.builtin.command:
-    cmd: "mv {{ item.stat.path }} {{ item.stat.path }}_legacy"
-  when: "item.stat.exists and not ('# BEGIN Managed by Ansible - Do not modify this line' in (item.content | b64decode))"
+- name: Copy existing dotfiles to _legacy
+  ansible.builtin.copy:
+    src: "{{ item.stat.path }}"
+    dest: "{{ item.stat.path }}_legacy"
+    mode: "0600"
+    remote_src: true
+    force: false
+  when: item.stat.exists and not ('# BEGIN Legacy config - Managed by Ansible - Do not modify this line' in (item.content | b64decode))
   loop: "{{ dotfiles_status }}"
   tags: setup
 
-- name: Create new dotfiles that source the _legacy files
-  ansible.builtin.blockinfile:
+- name: Remove original dotfiles after renaming
+  ansible.builtin.file:
     path: "{{ item.stat.path }}"
-    create: yes
-    block: "source {{ ansible_env.HOME }}/{{ item.stat.path }}_legacy"
-    marker: "# {mark} Managed by Ansible - Do not modify this line"
-  when: "item.stat.exists and not ('# BEGIN Managed by Ansible - Do not modify this line' in (item.content | b64decode))"
+    state: absent
+  when: item.stat.exists and not ('# BEGIN Legacy config - Managed by Ansible - Do not modify this line' in (item.content | b64decode))
   loop: "{{ dotfiles_status }}"
   tags: setup
