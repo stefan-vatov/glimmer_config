@@ -21,7 +21,7 @@
     - bungcip.better-toml
     - systemticks.c4-dsl-extension
     - stackbreak.comment-divider
-    - editorconfig.editorcon
+    - EditorConfig.EditorConfig
     - jakebecker.elixir-ls
     - github.copilot
     - kokakiwi.vscode-just
