@@ -1,0 +1,8 @@
+---
+warn_list: # or 'skip_list' to silence them completely
+  - command-instead-of-shell # Use shell only when shell functionality is required.
+  - experimental # all rules tagged as experimental
+  - fqcn-builtins # Use FQCN for builtin actions.
+  - git-latest # Git checkouts must contain explicit version.
+  - no-changed-when # Commands should not change things if nothing needs doing.
+  - yaml # Violations reported by yamllint.

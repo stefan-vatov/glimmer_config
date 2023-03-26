@@ -1,0 +1,18 @@
+---
+extends: default
+rules:
+  line-length:
+    max: 180
+  trailing-spaces: enable
+  new-line-at-end-of-file: enable
+  indentation:
+    spaces: 2
+  hyphens:
+    max-spaces-after: 1
+  commas: enable
+  comments:
+    require-starting-space: true # default
+    min-spaces-from-content: 1
+  braces:
+    min-spaces-inside: 1
+    max-spaces-inside: 1

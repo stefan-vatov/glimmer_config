@@ -1,0 +1,53 @@
+---
+- name: Ensure dotfiles destination directory exists
+  ansible.builtin.file:
+    path: "{{ ansible_env.HOME }}/.dotfiles/sv"
+    mode: "0700"
+    state: directory
+
+  become: false
+  tags:
+    - setup
+
+- name: Clone dotfiles repository
+  ansible.builtin.git:
+    repo: https://github.com/stefan-vatov/dotfiles.git
+    dest: "{{ ansible_env.HOME }}/.dotfiles/sv"
+    update: true
+  become: false
+  tags:
+    - setup
+
+- name: Use GNU Stow to link dotfiles
+  ansible.builtin.command:
+    cmd: stow -t {{ ansible_env.HOME }} -d {{ ansible_env.HOME }}/.dotfiles/sv -R . --ignore='.DS_Store'
+  become: false
+  tags:
+    - setup
+
+- name: Check for existing dotfiles
+  ansible.builtin.stat:
+    path: "{{ ansible_env.HOME }}/{{ item }}"
+  register: dotfiles_status
+  loop: "{{ dotfiles_list }}"
+  tags: setup
+
+- name: Check if dotfiles are managed by Ansible
+  ansible.builtin.slurp:
+    src: "{{ ansible_env.HOME }}/{{ item.item }}"
+  register: file_contents
+  loop: "{{ dotfiles_status.results }}"
+  when: item.stat.exists
+  tags: setup
+
+- name: Set is_managed flag for each dotfile
+  ansible.builtin.set_fact:
+    dotfiles_status: "{{ dotfiles_status.results | zip(file_contents.results) | map('combine') | list }}"
+  tags: setup
+
+- name: Rename existing dotfiles to _sv
+  ansible.builtin.command:
+    cmd: mv {{ item.stat.path }} {{ item.stat.path }}_sv
+  when: item.stat.exists and not ('# BEGIN SV config - Managed by Ansible - Do not modify this line' in (item.content | b64decode))
+  loop: "{{ dotfiles_status }}"
+  tags: setup

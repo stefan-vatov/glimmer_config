@@ -1,7 +1,6 @@
 ---
-
 - name: Set vars
-  set_fact:
+  ansible.builtin.set_fact:
     brew_bin: /opt/homebrew/bin/brew
   tags:
     - setup
@@ -22,10 +21,17 @@
     - setup
 
 - name: Install Homebrew packages
-  ansible.builtin.homebrew:
+  community.general.homebrew:
     name: "{{ item }}"
     state: present
   loop: "{{ homebrew_packages_list }}"
-  become: no
+  become: false
+  tags:
+    - setup
+
+- name: Install packages using Homebrew --cask
+  ansible.builtin.shell:
+    cmd: brew install --cask {{ item }}
+  loop: "{{ cask_packages }}"
   tags:
     - setup

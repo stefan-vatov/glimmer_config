@@ -1,5 +1,4 @@
 ---
-
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks.git
     rev: v4.4.0
@@ -17,6 +16,32 @@ repos:
       - id: sort-simple-yaml
         files: ^vars/(.*).yml$
       - id: check-added-large-files
-        args: ['--maxkb=6000']
+        args: [--maxkb=6000]
       - id: no-commit-to-branch
         args: [--branch, main]
+
+  - repo: https://github.com/ansible/ansible-lint
+    rev: v6.14.3
+    hooks:
+      - id: ansible-lint
+        additional_dependencies:
+          - ansible==7.3.0
+        exclude: .pre-commit-config.yaml
+        args: [--write]
+
+  - repo: local
+    hooks:
+      - id: pre-commit-check-mode
+        name: Check mode
+        entry: ansible-playbook --syntax-check --check playbook.yml
+        language: system
+        files: ^playbook\.yml$
+        exclude: .pre-commit-config.yaml
+
+  - repo: https://github.com/adrienverge/yamllint
+    rev: v1.30.0
+    hooks:
+      - id: yamllint
+        args: [--config-file=.yamllint.yml]
+        files: \.(yml|yaml)$
+        exclude: .pre-commit-config.yaml

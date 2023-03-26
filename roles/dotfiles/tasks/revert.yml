@@ -24,15 +24,56 @@
   ansible.builtin.file:
     path: "{{ item.stat.path }}"
     state: absent
-  when: "item.stat.exists and ('# BEGIN Managed by Ansible - Do not modify this line' in (item.content | b64decode))"
+  when: item.stat.exists and ('# BEGIN Legacy config - Managed by Ansible - Do not modify this line' in (item.content | b64decode) or '# BEGIN SV config - Managed by Ansible - Do
+    not modify this line' in (item.content | b64decode))
   loop: "{{ dotfiles_status }}"
   tags:
     - revert_dotfiles
 
-- name: Rename _legacy dotfiles back to original
+- name: Unstow dotfiles
   ansible.builtin.command:
-    cmd: "mv {{ item.stat.path }}_legacy {{ item.stat.path }}"
-  when: "item.stat.exists and ('# BEGIN Managed by Ansible - Do not modify this line' in (item.content | b64decode))"
-  loop: "{{ dotfiles_status }}"
+    cmd: stow -t {{ ansible_env.HOME }} -d {{ ansible_env.HOME }}/.dotfiles/sv -D . --ignore='.DS_Store'
+    chdir: "{{ ansible_env.HOME }}"
+  args:
+    chdir: "{{ ansible_env.HOME }}"
+  register: unstow_result
+  failed_when: unstow_result.rc not in [0, 1, 13]
+  tags:
+    - revert_dotfiles
+
+- name: Find all _sv files in the home folder
+  ansible.builtin.find:
+    paths: "{{ ansible_env.HOME }}"
+    patterns: "*_sv"
+    file_type: file
+  register: sv_files_result
+  tags:
+    - revert_dotfiles
+
+- name: Remove _sv files
+  ansible.builtin.file:
+    path: "{{ item.path }}"
+    state: absent
+  loop: "{{ sv_files_result.files }}"
+  tags:
+    - revert_dotfiles
+
+- name: Remove dotfiles directory
+  file:
+    path: "{{ ansible_env.HOME }}/.dotfiles/sv"
+    state: absent
+  tags:
+    - revert_dotfiles
+
+- name: Find all _legacy files in the home folder
+  ansible.builtin.shell: find {{ ansible_env.HOME }} -maxdepth 1 -type f -name '*_legacy'
+  register: legacy_files_result
+  tags:
+    - revert_dotfiles
+
+- name: Rename _legacy files by removing the _legacy part
+  ansible.builtin.command:
+    cmd: mv {{ item }} {{ item | regex_replace('_legacy', '') }}
+  loop: "{{ legacy_files_result.stdout_lines }}"
   tags:
     - revert_dotfiles
