@@ -23,7 +23,7 @@
 - name: Install Homebrew packages
   community.general.homebrew:
     name: "{{ item }}"
-    state: present
+    state: latest
   loop: "{{ homebrew_packages_list }}"
   become: false
   tags:

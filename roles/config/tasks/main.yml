@@ -1,0 +1,12 @@
+---
+- name: Add fonts
+  ansible.builtin.include_tasks: fonts.yml
+  tags:
+    - setup
+    - fonts
+
+- name: Configure VS Code
+  ansible.builtin.include_tasks: vscode.yml
+  tags:
+    - setup
+    - vscode

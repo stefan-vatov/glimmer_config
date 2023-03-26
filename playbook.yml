@@ -8,3 +8,4 @@
   roles:
     - { role: homebrew_packages, tags: [setup] }
     - { role: dotfiles }
+    - { role: config, tags: [setup, fonts] }

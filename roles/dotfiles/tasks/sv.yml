@@ -1,7 +1,13 @@
 ---
+- name: Set the dotfiles repository folder
+  ansible.builtin.set_fact:
+    dotfiles_repo: "{{ ansible_env.HOME }}/.dotfiles/sv"
+  tags:
+    - setup
+
 - name: Ensure dotfiles destination directory exists
   ansible.builtin.file:
-    path: "{{ ansible_env.HOME }}/.dotfiles/sv"
+    path: "{{ dotfiles_repo }}"
     mode: "0700"
     state: directory
 
@@ -12,11 +18,27 @@
 - name: Clone dotfiles repository
   ansible.builtin.git:
     repo: https://github.com/stefan-vatov/dotfiles.git
-    dest: "{{ ansible_env.HOME }}/.dotfiles/sv"
+    dest: "{{ dotfiles_repo }}"
     update: true
   become: false
   tags:
     - setup
+
+- name: Set up pre-commit hooks in the repository
+  ansible.builtin.command:
+    cmd: pre-commit install
+    chdir: "{{ dotfiles_repo }}"
+  tags:
+    - setup
+
+# Set up to push for those that can
+- name: Change dotfiles repository origin
+  ansible.builtin.command:
+    cmd: git remote set-url origin git@github.com:stefan-vatov/dotfiles.git
+    chdir: "{{ dotfiles_repo }}"
+  tags:
+    - setup
+    - skip_ansible_lint
 
 - name: Use GNU Stow to link dotfiles
   ansible.builtin.command:
