@@ -40,6 +40,14 @@
     - orta.vscode-jest
     - firsttris.vscode-jest-runner
     - andys8.jest-snippets
+    - aaron-bond.better-comments
+    - mathiasfrohlich.kotlin
+    - vsliveshare.vsliveshare-pack
+    - bierner.markdown-mermaid
+    - ahmadalli.vscode-nginx-conf
+    - christian-kohler.npm-intellisense
+    - 4ops.terraform
+    - vscode-icons-team.vscode-icons
   tags:
     - setup
     - vscode
