@@ -28,6 +28,10 @@ homebrew_packages_list:
   - git-delta
   - neovim
   - starship
+  - dust
+  - bottom
+  - topgrade
+  - tokei
 
 cask_packages:
   - alacritty

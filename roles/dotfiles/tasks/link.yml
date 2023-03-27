@@ -57,3 +57,19 @@
     marker: "# {mark} SV config - Managed by Ansible - Do not modify this line"
   tags:
     - setup
+
+- name: Check if .gitconfig.local file exists
+  ansible.builtin.stat:
+    path: "{{ ansible_env.HOME }}/.gitconfig.local"
+  register: gitconfig_local
+  tags:
+    - setup
+
+- name: Create .gitconfig.local file if it doesn't exist
+  ansible.builtin.file:
+    path: "{{ ansible_env.HOME }}/.gitconfig.local"
+    state: touch
+    mode: "0600"
+  when: not gitconfig_local.stat.exists
+  tags:
+    - setup

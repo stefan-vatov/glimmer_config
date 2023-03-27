@@ -44,8 +44,9 @@
 - name: Find all _sv files in the home folder
   ansible.builtin.find:
     paths: "{{ ansible_env.HOME }}"
-    patterns: "*_sv"
-    file_type: file
+    patterns: .*_sv
+    file_type: any
+    hidden: true
   register: sv_files_result
   tags:
     - revert_dotfiles

@@ -1,14 +1,11 @@
 ---
 dotfiles_list:
   - .bashrc
-  - .vimrc
   - .zshrc
   - .gitconfig
   - .bash_profile
-  - .gitmodules
   - .dircolors
   - .tmux.conf
   - .aliases
   - .inputrc
   - .zlogin
-  - .nvimrc
