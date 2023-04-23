@@ -47,6 +47,11 @@
     - christian-kohler.npm-intellisense
     - 4ops.terraform
     - vscode-icons-team.vscode-icons
+    - phoenixframework.phoenix
+    - bazelbuild.vscode-bazel
+    - oderwat.indent-rainbow
+    - bradlc.vscode-tailwindcss
+    - samuel-pordeus.elixir-test
   tags:
     - setup
     - vscode
