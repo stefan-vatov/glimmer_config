@@ -52,6 +52,7 @@
     - oderwat.indent-rainbow
     - bradlc.vscode-tailwindcss
     - samuel-pordeus.elixir-test
+    - robbowen.synthwave-vscode
   tags:
     - setup
     - vscode
