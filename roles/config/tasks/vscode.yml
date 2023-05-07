@@ -53,6 +53,7 @@
     - bradlc.vscode-tailwindcss
     - samuel-pordeus.elixir-test
     - robbowen.synthwave-vscode
+    - vadimcn.vscode-lldb
   tags:
     - setup
     - vscode
