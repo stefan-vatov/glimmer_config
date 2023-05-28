@@ -17,8 +17,6 @@ repos:
         files: ^vars/(.*).yml$
       - id: check-added-large-files
         args: [--maxkb=6000]
-      - id: no-commit-to-branch
-        args: [--branch, main]
 
   - repo: https://github.com/ansible/ansible-lint
     rev: v6.14.3
