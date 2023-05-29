@@ -9,14 +9,14 @@
 - name: Check if dotfiles are managed by Ansible
   ansible.builtin.slurp:
     src: "{{ ansible_env.HOME }}/{{ item.item }}"
-  register: file_contents
+  register: dotfiles_file_contents
   loop: "{{ dotfiles_status.results }}"
   when: item.stat.exists
   tags: setup
 
 - name: Set is_managed flag for each dotfile
   ansible.builtin.set_fact:
-    dotfiles_status: "{{ dotfiles_status.results | zip(file_contents.results) | map('combine') | list }}"
+    dotfiles_status: "{{ dotfiles_status.results | zip(dotfiles_file_contents.results) | map('combine') | list }}"
   tags: setup
 
 - name: Copy existing dotfiles to _legacy

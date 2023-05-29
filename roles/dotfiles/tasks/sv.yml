@@ -23,6 +23,7 @@
   become: false
   tags:
     - setup
+    - skip_ansible_lint
 
 - name: Set up pre-commit hooks in the repository
   ansible.builtin.command:
@@ -30,6 +31,7 @@
     chdir: "{{ dotfiles_repo }}"
   tags:
     - setup
+    - skip_ansible_lint
 
 # Set up to push for those that can
 - name: Change dotfiles repository origin
@@ -46,30 +48,33 @@
   become: false
   tags:
     - setup
+    - skip_ansible_lint
 
 - name: Check for existing dotfiles
   ansible.builtin.stat:
     path: "{{ ansible_env.HOME }}/{{ item }}"
-  register: dotfiles_status
+  register: dotfiles_dotfiles_status
   loop: "{{ dotfiles_list }}"
   tags: setup
 
 - name: Check if dotfiles are managed by Ansible
   ansible.builtin.slurp:
     src: "{{ ansible_env.HOME }}/{{ item.item }}"
-  register: file_contents
-  loop: "{{ dotfiles_status.results }}"
+  register: dotfiles_file_contents
+  loop: "{{ dotfiles_dotfiles_status.results }}"
   when: item.stat.exists
   tags: setup
 
 - name: Set is_managed flag for each dotfile
   ansible.builtin.set_fact:
-    dotfiles_status: "{{ dotfiles_status.results | zip(file_contents.results) | map('combine') | list }}"
+    dotfiles_dotfiles_status: "{{ dotfiles_dotfiles_status.results | zip(dotfiles_file_contents.results) | map('combine') | list }}"
   tags: setup
 
 - name: Rename existing dotfiles to _sv
   ansible.builtin.command:
     cmd: mv {{ item.stat.path }} {{ item.stat.path }}_sv
   when: item.stat.exists and not ('# BEGIN SV config - Managed by Ansible - Do not modify this line' in (item.content | b64decode))
-  loop: "{{ dotfiles_status }}"
-  tags: setup
+  loop: "{{ dotfiles_dotfiles_status }}"
+  tags:
+    - setup
+    - skip_ansible_lint

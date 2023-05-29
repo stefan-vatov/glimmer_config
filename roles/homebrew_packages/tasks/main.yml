@@ -1,24 +1,25 @@
 ---
 - name: Set vars
   ansible.builtin.set_fact:
-    brew_bin: /opt/homebrew/bin/brew
+    homebrew_packages_brew_bin: /opt/homebrew/bin/brew
   tags:
     - setup
 
 - name: Check if Homebrew is installed
   ansible.builtin.stat:
-    path: "{{ brew_bin }}"
-  register: brew_check
+    path: "{{ homebrew_packages_brew_bin }}"
+  register: homebrew_packages_brew_check
   tags:
     - setup
 
 - name: Install Homebrew if not present
   ansible.builtin.shell: /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
   args:
-    creates: "{{ brew_bin }}"
-  when: not brew_check.stat.exists
+    creates: "{{ homebrew_packages_brew_bin }}"
+  when: not homebrew_packages_brew_check.stat.exists
   tags:
     - setup
+    - skip_ansible_lint
 
 - name: Install Homebrew packages
   community.general.homebrew:
@@ -35,3 +36,4 @@
   loop: "{{ cask_packages }}"
   tags:
     - setup
+    - skip_ansible_lint

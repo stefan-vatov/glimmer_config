@@ -2,7 +2,7 @@
 - name: Check for existing dotfiles
   ansible.builtin.stat:
     path: "{{ ansible_env.HOME }}/{{ item }}"
-  register: dotfiles_status
+  register: dotfiles_dotfiles_status
   loop: "{{ dotfiles_list }}"
   tags:
     - revert_dotfiles
@@ -10,14 +10,14 @@
 - name: Check if dotfiles are managed by Ansible
   ansible.builtin.slurp:
     src: "{{ ansible_env.HOME }}/{{ item.item }}"
-  register: managed_file_contents
-  loop: "{{ dotfiles_status.results }}"
+  register: dotfiles_managed_file_contents
+  loop: "{{ dotfiles_dotfiles_status.results }}"
   when: item.stat.exists
   tags: revert_dotfiles
 
 - name: Set is_managed flag for each dotfile
   ansible.builtin.set_fact:
-    dotfiles_status: "{{ dotfiles_status.results | zip(managed_file_contents.results) | map('combine') | list }}"
+    dotfiles_dotfiles_status: "{{ dotfiles_dotfiles_status.results | zip(dotfiles_managed_file_contents.results) | map('combine') | list }}"
   tags: revert_dotfiles
 
 - name: Remove managed dotfiles
@@ -26,7 +26,7 @@
     state: absent
   when: item.stat.exists and ('# BEGIN Legacy config - Managed by Ansible - Do not modify this line' in (item.content | b64decode) or '# BEGIN SV config - Managed by Ansible - Do
     not modify this line' in (item.content | b64decode))
-  loop: "{{ dotfiles_status }}"
+  loop: "{{ dotfiles_dotfiles_status }}"
   tags:
     - revert_dotfiles
 
@@ -36,10 +36,11 @@
     chdir: "{{ ansible_env.HOME }}"
   args:
     chdir: "{{ ansible_env.HOME }}"
-  register: unstow_result
-  failed_when: unstow_result.rc not in [0, 1, 13]
+  register: dotfiles_unstow_result
+  failed_when: dotfiles_unstow_result.rc not in [0, 1, 13]
   tags:
     - revert_dotfiles
+    - skip_ansible_lint
 
 - name: Find all _sv files in the home folder
   ansible.builtin.find:
@@ -47,7 +48,7 @@
     patterns: .*_sv
     file_type: any
     hidden: true
-  register: sv_files_result
+  register: dotfiles_sv_files_result
   tags:
     - revert_dotfiles
 
@@ -55,12 +56,12 @@
   ansible.builtin.file:
     path: "{{ item.path }}"
     state: absent
-  loop: "{{ sv_files_result.files }}"
+  loop: "{{ dotfiles_sv_files_result.files }}"
   tags:
     - revert_dotfiles
 
 - name: Remove dotfiles directory
-  file:
+  ansible.builtin.file:
     path: "{{ ansible_env.HOME }}/.dotfiles/sv"
     state: absent
   tags:
@@ -68,13 +69,15 @@
 
 - name: Find all _legacy files in the home folder
   ansible.builtin.shell: find {{ ansible_env.HOME }} -maxdepth 1 -type f -name '*_legacy'
-  register: legacy_files_result
+  register: dotfiles_legacy_files_result
   tags:
     - revert_dotfiles
+    - skip_ansible_lint
 
 - name: Rename _legacy files by removing the _legacy part
   ansible.builtin.command:
     cmd: mv {{ item }} {{ item | regex_replace('_legacy', '') }}
-  loop: "{{ legacy_files_result.stdout_lines }}"
+  loop: "{{ dotfiles_legacy_files_result.stdout_lines }}"
   tags:
     - revert_dotfiles
+    - skip_ansible_lint

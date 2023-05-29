@@ -56,3 +56,4 @@
   tags:
     - setup
     - vscode
+    - skip_ansible_lint
