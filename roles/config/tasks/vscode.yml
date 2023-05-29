@@ -6,16 +6,16 @@
     state: link
     force: true
   loop:
-    - { src: ~/.code/keybindings.json, dest: ~/Library/Application Support/Code/User/keybindings.json }
-    - { src: ~/.code/settings.json, dest: ~/Library/Application Support/Code/User/settings.json }
-    - { src: ~/.code/snippets, dest: ~/Library/Application Support/Code/User/snippets }
+    - { src: ~/.code/keybindings.json, dest: ~/Library/Application Support/Code - Insiders/User/keybindings.json }
+    - { src: ~/.code/settings.json, dest: ~/Library/Application Support/Code - Insiders/User/settings.json }
+    - { src: ~/.code/snippets, dest: ~/Library/Application Support/Code - Insiders/User/snippets }
   tags:
     - setup
     - vscode
 
 - name: Install Visual Studio Code extensions
   ansible.builtin.command:
-    cmd: code --install-extension {{ item }}
+    cmd: code-insiders --install-extension {{ item }}
   loop:
     - redhat.vscode-yaml
     - bungcip.better-toml
@@ -54,7 +54,7 @@
     - samuel-pordeus.elixir-test
     - robbowen.synthwave-vscode
     - vadimcn.vscode-lldb
-    - snippets.phoenix-liveview-snippets
+    - phoenix-liveview-snippets.phoenix-liveview-snippets
     - mechatroner.rainbow-csv
   tags:
     - setup
