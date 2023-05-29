@@ -56,6 +56,7 @@
     - vadimcn.vscode-lldb
     - phoenix-liveview-snippets.phoenix-liveview-snippets
     - mechatroner.rainbow-csv
+    - dwrolvink.obsidian-dark-theme-rust
   tags:
     - setup
     - vscode
