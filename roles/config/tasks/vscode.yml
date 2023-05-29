@@ -23,7 +23,7 @@
     - stackbreak.comment-divider
     - EditorConfig.EditorConfig
     - jakebecker.elixir-ls
-    - github.copilot
+    - github.copilot-nightly
     - kokakiwi.vscode-just
     - mattn.lisp
     - ms-vsliveshare.vsliveshare
@@ -53,6 +53,9 @@
     - bradlc.vscode-tailwindcss
     - samuel-pordeus.elixir-test
     - robbowen.synthwave-vscode
+    - vadimcn.vscode-lldb
+    - snippets.phoenix-liveview-snippets
+    - mechatroner.rainbow-csv
   tags:
     - setup
     - vscode
