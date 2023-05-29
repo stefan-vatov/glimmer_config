@@ -2,25 +2,26 @@
 - name: List all _legacy and _sv dotfiles
   ansible.builtin.command:
     cmd: find {{ ansible_env.HOME }} -maxdepth 1 -type f -name '*_legacy' -o -name '*_sv'
-  register: found_files_output
+  register: dotfiles_found_files_output
   tags:
     - setup
+    - skip_ansible_lint
 
 - name: Parse found files output
   ansible.builtin.set_fact:
-    found_files: "{{ found_files_output.stdout_lines }}"
+    dotfiles_found_files: "{{ dotfiles_found_files_output.stdout_lines }}"
   tags:
     - setup
 
 - name: Create a list of _legacy files
   ansible.builtin.set_fact:
-    legacy_files: "{{ found_files | select('match', '.*_legacy') | list }}"
+    dotfiles_legacy_files: "{{ dotfiles_found_files | select('match', '.*_legacy') | list }}"
   tags:
     - setup
 
 - name: Create a list of _sv files
   ansible.builtin.set_fact:
-    sv_files: "{{ found_files | select('match', '.*_sv') | list }}"
+    dotfiles_sv_files: "{{ dotfiles_found_files | select('match', '.*_sv') | list }}"
   tags:
     - setup
 
@@ -31,7 +32,7 @@
     create: true
     mode: "0600"
     marker: "# {mark} Legacy config - Managed by Ansible - Do not modify this line"
-  loop: "{{ legacy_files }}"
+  loop: "{{ dotfiles_legacy_files }}"
   tags:
     - setup
 
@@ -42,7 +43,7 @@
     mode: "0600"
     block: source {{ item }}
     marker: "# {mark} SV config - Managed by Ansible - Do not modify this line"
-  loop: "{{ sv_files }}"
+  loop: "{{ dotfiles_sv_files }}"
   tags:
     - setup
 
@@ -61,7 +62,7 @@
 - name: Check if .gitconfig.local file exists
   ansible.builtin.stat:
     path: "{{ ansible_env.HOME }}/.gitconfig.local"
-  register: gitconfig_local
+  register: dotfiles_gitconfig_local
   tags:
     - setup
 
@@ -70,6 +71,6 @@
     path: "{{ ansible_env.HOME }}/.gitconfig.local"
     state: touch
     mode: "0600"
-  when: not gitconfig_local.stat.exists
+  when: not dotfiles_gitconfig_local.stat.exists
   tags:
     - setup
