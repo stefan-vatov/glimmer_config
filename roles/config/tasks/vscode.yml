@@ -57,6 +57,7 @@
     - phoenix-liveview-snippets.phoenix-liveview-snippets
     - mechatroner.rainbow-csv
     - dwrolvink.obsidian-dark-theme-rust
+    - github.vscode-github-actions
   tags:
     - setup
     - vscode
