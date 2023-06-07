@@ -58,6 +58,7 @@
     - mechatroner.rainbow-csv
     - dwrolvink.obsidian-dark-theme-rust
     - github.vscode-github-actions
+    - takumii.markdowntable
   tags:
     - setup
     - vscode
