@@ -32,7 +32,7 @@
 
 - name: Install packages using Homebrew --cask
   ansible.builtin.shell:
-    cmd: brew install --cask {{ item }}
+    cmd: brew install --cask --force {{ item }}
   loop: "{{ cask_packages }}"
   tags:
     - setup
