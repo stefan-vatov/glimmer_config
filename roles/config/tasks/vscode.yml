@@ -33,7 +33,6 @@
     - ms-python.python
     - rust-lang.rust-analyzer
     - karunamurti.tera
-    - github.copilot-labs
     - tamasfe.even-better-toml
     - github.vscode-pull-request-github
     - github.github-vscode-theme
