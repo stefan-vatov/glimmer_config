@@ -58,6 +58,9 @@
     - dwrolvink.obsidian-dark-theme-rust
     - github.vscode-github-actions
     - takumii.markdowntable
+    - heybourn.headwind
+    - stivo.tailwind-fold
+    - streetsidesoftware.code-spell-checker
   tags:
     - setup
     - vscode
