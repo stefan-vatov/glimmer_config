@@ -8,19 +8,20 @@
     - setup
     - fonts
 
-- name: Download Fira Code font from GitHub
-  ansible.builtin.get_url:
-    url: https://github.com/ryanoasis/nerd-fonts/releases/download/v2.3.3/FiraCode.zip
-    dest: /tmp/Fira_Code_v2.3.3.zip
-    mode: "0644"
+- name: Find all font files
+  ansible.builtin.find:
+    paths: "{{ role_path }}/files/FiraCode"
+  register: files_to_copy
   tags:
     - setup
     - fonts
+    - skip_ansible_lint
 
-- name: Unzip fonts
-  ansible.builtin.command:
-    cmd: unzip -o -j /tmp/Fira_Code_v2.3.3.zip -d {{ ansible_env.HOME }}/Library/Fonts
-    removes: /tmp/Fira_Code_v2.3.3.zip
+- name: Copy each file to the remote destination
+  ansible.builtin.copy:
+    src: "{{ item.path }}"
+    dest: "{{ ansible_env.HOME }}/Library/Fonts/FiraCode/{{ item.path | basename }}"
+  loop: "{{ files_to_copy.files }}"
   tags:
     - setup
     - fonts

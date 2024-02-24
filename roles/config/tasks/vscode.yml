@@ -1,4 +1,16 @@
 ---
+- name: Remove symlinks for Visual Studio Code configuration files
+  ansible.builtin.file:
+    dest: "{{ item.dest }}"
+    state: absent
+  loop:
+    - { dest: ~/Library/Application Support/Code - Insiders/User/keybindings.json }
+    - { dest: ~/Library/Application Support/Code - Insiders/User/settings.json }
+    - { dest: ~/Library/Application Support/Code - Insiders/User/snippets }
+  tags:
+    - cleanup
+    - vscode
+
 - name: Create symlinks for Visual Studio Code configuration files
   ansible.builtin.file:
     src: "{{ item.src }}"
@@ -23,7 +35,6 @@
     - stackbreak.comment-divider
     - EditorConfig.EditorConfig
     - jakebecker.elixir-ls
-    - github.copilot-nightly
     - kokakiwi.vscode-just
     - mattn.lisp
     - ms-vsliveshare.vsliveshare
