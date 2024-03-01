@@ -33,9 +33,13 @@ homebrew_packages_list:
   - topgrade
   - tokei
   - vale # prose linter for docs
+  - "emacs-plus --with-native-comp"
 
 cask_packages:
   - alacritty
   - amethyst
   - handbrake
   - homebrew/cask-versions/visual-studio-code-insiders
+
+homebrew_taps:
+  - d12frosted/emacs-plus

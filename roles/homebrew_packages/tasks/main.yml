@@ -21,6 +21,14 @@
     - setup
     - skip_ansible_lint
 
+- name: Tap taps
+  ansible.builtin.command:
+    cmd: brew tap {{ item }}
+  loop: "{{ homebrew_taps }}"
+  changed_when: false
+  tags:
+    - setup
+
 - name: Install Homebrew packages
   community.general.homebrew:
     name: "{{ item }}"
