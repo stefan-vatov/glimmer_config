@@ -1,6 +1,7 @@
 ---
 homebrew_packages_list:
   - fd
+  - difftastic
   - ddosify/tap/ddosify
   - just
   - tree
@@ -33,7 +34,7 @@ homebrew_packages_list:
   - topgrade
   - tokei
   - vale # prose linter for docs
-  - "emacs-plus --with-native-comp"
+  - espanso
 
 cask_packages:
   - alacritty
@@ -43,3 +44,4 @@ cask_packages:
 
 homebrew_taps:
   - d12frosted/emacs-plus
+  - espanso/espanso
