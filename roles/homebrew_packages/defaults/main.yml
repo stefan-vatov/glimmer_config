@@ -34,7 +34,7 @@ homebrew_packages_list:
   - topgrade
   - tokei
   - vale # prose linter for docs
-  - "emacs-plus --with-native-comp"
+  - emacs-plus --with-native-comp
 
 cask_packages:
   - alacritty
