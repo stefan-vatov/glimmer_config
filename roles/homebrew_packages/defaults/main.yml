@@ -1,7 +1,6 @@
 ---
 homebrew_packages_list:
   - fd
-  - ddosify/tap/ddosify
   - just
   - tree
   - nvim
@@ -33,7 +32,6 @@ homebrew_packages_list:
   - topgrade
   - tokei
   - vale # prose linter for docs
-  - "emacs-plus --with-native-comp"
 
 cask_packages:
   - alacritty
