@@ -47,7 +47,7 @@
     - skip_ansible_lint
 
 - name: Install emacs-plus with native-comp
-  command: brew install emacs-plus --with-native-comp
+  ansible.builtin.command: brew install emacs-plus --with-native-comp
   become: false
   tags:
     - setup
