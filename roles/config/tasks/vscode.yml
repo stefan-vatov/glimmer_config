@@ -30,7 +30,6 @@
     cmd: code-insiders --install-extension {{ item }}
   loop:
     - redhat.vscode-yaml
-    - bungcip.better-toml
     - systemticks.c4-dsl-extension
     - stackbreak.comment-divider
     - EditorConfig.EditorConfig
