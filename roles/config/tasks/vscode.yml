@@ -71,6 +71,7 @@
     - heybourn.headwind
     - stivo.tailwind-fold
     - streetsidesoftware.code-spell-checker
+    - vscodevim.vim
   tags:
     - setup
     - vscode
