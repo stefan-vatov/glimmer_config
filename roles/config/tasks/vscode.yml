@@ -72,6 +72,8 @@
     - stivo.tailwind-fold
     - streetsidesoftware.code-spell-checker
     - vscodevim.vim
+    - iulian-radu-at.find-unused-exports
+    - continue.continue
   tags:
     - setup
     - vscode
