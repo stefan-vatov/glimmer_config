@@ -35,6 +35,7 @@ homebrew_packages_list:
   - tokei
   - vale # prose linter for docs
   - espanso
+  - deskpad
 
 cask_packages:
   - alacritty
