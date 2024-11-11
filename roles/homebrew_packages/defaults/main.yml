@@ -42,6 +42,7 @@ cask_packages:
   - amethyst
   - handbrake
   - homebrew/cask-versions/visual-studio-code-insiders
+  - hiddenbar
 
 homebrew_taps:
   - d12frosted/emacs-plus
