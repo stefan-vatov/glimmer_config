@@ -74,6 +74,7 @@
     - vscodevim.vim
     - iulian-radu-at.find-unused-exports
     - continue.continue
+    - esbenp.prettier-vscode
   tags:
     - setup
     - vscode
