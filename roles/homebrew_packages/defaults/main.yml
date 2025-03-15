@@ -43,6 +43,7 @@ cask_packages:
   - handbrake
   - homebrew/cask-versions/visual-studio-code-insiders
   - hiddenbar
+  - ghostty
 
 homebrew_taps:
   - d12frosted/emacs-plus
