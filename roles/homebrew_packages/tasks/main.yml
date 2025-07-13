@@ -29,12 +29,31 @@
   tags:
     - setup
 
+- name: Count packages to install
+  ansible.builtin.set_fact:
+    homebrew_packages_total_packages: "{{ homebrew_packages_list | length }}"
+  tags:
+    - setup
+
 - name: Install Homebrew packages
   community.general.homebrew:
     name: "{{ item }}"
     state: latest
   loop: "{{ homebrew_packages_list }}"
+  loop_control:
+    index_var: pkg_index
   become: false
+  register: homebrew_packages_pkg_result
+  tags:
+    - setup
+
+- name: Show package installation progress
+  ansible.builtin.debug:
+    msg: "Installing package {{ pkg_index + 1 }} of {{ homebrew_packages_total_packages }}: {{ item }}"
+  loop: "{{ homebrew_packages_list }}"
+  loop_control:
+    index_var: pkg_index
+  when: homebrew_packages_pkg_result is not defined or homebrew_packages_pkg_result.changed
   tags:
     - setup
 
@@ -49,5 +68,6 @@
 - name: Install emacs-plus with native-comp
   ansible.builtin.command: brew install emacs-plus --with-native-comp
   become: false
+  changed_when: false
   tags:
     - setup
