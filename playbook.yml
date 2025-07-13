@@ -5,6 +5,29 @@
   gather_facts: true
   become: false
 
+  pre_tasks:
+    - name: Check for required commands
+      ansible.builtin.command: which {{ item }}
+      register: cmd_check
+      failed_when: false
+      changed_when: false
+      loop:
+        - git
+        - curl
+        - ansible
+      tags: always
+
+    - name: Report missing dependencies
+      ansible.builtin.fail:
+        msg: |
+          Missing required command: {{ item.item }}
+          Please install it first:
+          - macOS: Install Xcode Command Line Tools with 'xcode-select --install'
+          - For Ansible: pip install ansible
+      when: item.rc != 0
+      loop: "{{ cmd_check.results }}"
+      tags: always
+
   roles:
     - { role: homebrew_packages, tags: [setup] }
     - { role: dotfiles }

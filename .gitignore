@@ -412,3 +412,7 @@ $RECYCLE.BIN/
 *.lnk
 
 # End of https://www.toptal.com/developers/gitignore/api/macos,linux,windows,visualstudiocode,emacs,vim,intellij+all,rust,node,ansible
+
+# Glimmer Config specific
+.plan
+~/.glimmer-backups/
