@@ -25,7 +25,7 @@ repos:
         additional_dependencies:
           - ansible==7.3.0
         exclude: .pre-commit-config.yaml
-        args: [--write]
+        args: [--write, --offline]
 
   - repo: local
     hooks:

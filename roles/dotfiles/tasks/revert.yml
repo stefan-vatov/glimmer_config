@@ -38,6 +38,7 @@
     chdir: "{{ ansible_env.HOME }}"
   register: dotfiles_unstow_result
   failed_when: dotfiles_unstow_result.rc not in [0, 1, 13]
+  when: not ansible_check_mode
   tags:
     - revert_dotfiles
     - skip_ansible_lint
@@ -78,6 +79,7 @@
   ansible.builtin.command:
     cmd: mv {{ item }} {{ item | regex_replace('_legacy', '') }}
   loop: "{{ dotfiles_legacy_files_result.stdout_lines }}"
+  when: not ansible_check_mode
   tags:
     - revert_dotfiles
     - skip_ansible_lint

@@ -1,4 +1,7 @@
 ---
+- name: Run homebrew pre-flight checks
+  ansible.builtin.include_tasks: preflight.yml
+  tags: [always, preflight]
 - name: Set vars
   ansible.builtin.set_fact:
     homebrew_packages_brew_bin: /opt/homebrew/bin/brew
@@ -61,6 +64,7 @@
   ansible.builtin.shell:
     cmd: brew install --cask --force {{ item }}
   loop: "{{ cask_packages }}"
+  when: not ansible_check_mode
   tags:
     - setup
     - skip_ansible_lint
@@ -69,5 +73,6 @@
   ansible.builtin.command: brew install emacs-plus --with-native-comp
   become: false
   changed_when: false
+  when: not ansible_check_mode
   tags:
     - setup

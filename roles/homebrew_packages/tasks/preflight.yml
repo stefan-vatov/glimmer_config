@@ -1,0 +1,40 @@
+---
+- name: Check for Homebrew binary (Apple Silicon)
+  ansible.builtin.stat:
+    path: /opt/homebrew/bin/brew
+  register: homebrew_packages_arm_check
+  tags: [always, preflight]
+- name: Check for Homebrew binary (Intel)
+  ansible.builtin.stat:
+    path: /usr/local/bin/brew
+  register: homebrew_packages_intel_check
+  tags: [always, preflight]
+- name: Validate Homebrew installation or installability
+  ansible.builtin.assert:
+    that:
+      - homebrew_packages_arm_check.stat.exists or homebrew_packages_intel_check.stat.exists or ansible_architecture == 'arm64' or ansible_architecture == 'x86_64'
+    fail_msg: Cannot find existing Homebrew installation and architecture not supported for installation
+    success_msg: Homebrew validation passed
+  tags: [always, preflight]
+- name: Test network connectivity to Homebrew
+  ansible.builtin.uri:
+    url: https://brew.sh
+    method: HEAD
+    timeout: 10
+  register: homebrew_packages_network_check
+  failed_when: false
+  tags: [always, preflight]
+- name: Fail if network connectivity issues
+  ansible.builtin.fail:
+    msg: Cannot reach brew.sh - check internet connectivity
+  when: homebrew_packages_network_check.status is not defined or homebrew_packages_network_check.status != 200
+  tags: [always, preflight]
+- name: Validate required variables are defined
+  ansible.builtin.assert:
+    that:
+      - homebrew_packages_list is defined
+      - homebrew_taps is defined
+      - cask_packages is defined
+    fail_msg: Required variables (homebrew_packages_list, homebrew_taps, cask_packages) must be defined
+    success_msg: Required variables validation passed
+  tags: [always, preflight]
