@@ -1,0 +1,63 @@
+---
+- name: Check for stow command
+  ansible.builtin.command: which stow
+  register: dotfiles_stow_check
+  failed_when: false
+  changed_when: false
+  tags: [always, preflight]
+- name: Fail if stow not found
+  ansible.builtin.fail:
+    msg: "stow command not found. Install with: brew install stow"
+  when: dotfiles_stow_check.rc != 0
+  tags: [always, preflight]
+- name: Check for pre-commit command
+  ansible.builtin.command: which pre-commit
+  register: dotfiles_precommit_check
+  failed_when: false
+  changed_when: false
+  tags: [always, preflight]
+- name: Fail if pre-commit not found
+  ansible.builtin.fail:
+    msg: "pre-commit command not found. Install with: brew install pre-commit"
+  when: dotfiles_precommit_check.rc != 0
+  tags: [always, preflight]
+- name: Validate dotfiles_list variable
+  ansible.builtin.assert:
+    that:
+      - dotfiles_list is defined
+      - dotfiles_list | length > 0
+    fail_msg: dotfiles_list must be defined and non-empty
+    success_msg: dotfiles_list validation passed
+  tags: [always, preflight]
+- name: Check write permissions to home directory
+  ansible.builtin.file:
+    path: "{{ ansible_env.HOME }}/.ansible_write_test"
+    state: touch
+    mode: "0600"
+  register: dotfiles_home_write_test
+  failed_when: false
+  tags: [always, preflight]
+- name: Clean up write test file
+  ansible.builtin.file:
+    path: "{{ ansible_env.HOME }}/.ansible_write_test"
+    state: absent
+  when: dotfiles_home_write_test is succeeded
+  tags: [always, preflight]
+- name: Fail if home directory not writable
+  ansible.builtin.fail:
+    msg: "Cannot write to home directory: {{ ansible_env.HOME }}"
+  when: dotfiles_home_write_test is failed
+  tags: [always, preflight]
+- name: Test network connectivity to GitHub
+  ansible.builtin.uri:
+    url: https://github.com
+    method: HEAD
+    timeout: 10
+  register: dotfiles_github_check
+  failed_when: false
+  tags: [always, preflight]
+- name: Fail if GitHub not accessible
+  ansible.builtin.fail:
+    msg: Cannot reach GitHub - check internet connectivity
+  when: dotfiles_github_check.status is not defined or dotfiles_github_check.status != 200
+  tags: [always, preflight]

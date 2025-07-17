@@ -75,6 +75,10 @@
     - iulian-radu-at.find-unused-exports
     - continue.continue
     - esbenp.prettier-vscode
+  when: not ansible_check_mode
+  register: vscode_extension_result
+  failed_when: false
+  changed_when: vscode_extension_result.rc == 0
   tags:
     - setup
     - vscode

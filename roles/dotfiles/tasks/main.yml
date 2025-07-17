@@ -1,4 +1,7 @@
 ---
+- name: Run dotfiles pre-flight checks
+  ansible.builtin.include_tasks: preflight.yml
+  tags: [always, preflight]
 - name: Revert dotfiles
   ansible.builtin.include_tasks: revert.yml
   tags: revert_dotfiles

@@ -25,10 +25,71 @@ ansible-playbook -i inventory.ini playbook.yml --tags revert_dotfiles
 Alternatively, if you have just installed the repository, you can use the `just` commands:
 
 ```bash
-just setup
+just install-collections  # Install required Ansible Galaxy collections
+just setup                # Full setup (automatically installs collections)
 just revert_dotfiles
 just update
 ```
+
+## Dependencies
+
+### Ansible Galaxy Collections
+
+This project requires specific Ansible Galaxy collections to function properly. The required collections are defined in `requirements.yml`:
+
+- `community.general` - Used for Homebrew package management
+
+#### Installing Collections
+
+Collections are automatically installed when you run `just setup`, `just dryrun`, or `just preflight`. You can also install them manually:
+
+```bash
+just install-collections
+```
+
+Or using ansible-galaxy directly:
+
+```bash
+ansible-galaxy collection install -r requirements.yml
+```
+
+## Safety and Testing
+
+### Pre-flight Checks
+
+Before running the full setup, validate that your system meets all requirements:
+
+```bash
+just preflight
+```
+
+Or using ansible-playbook directly:
+
+```bash
+ansible-playbook -i inventory.ini playbook.yml --tags preflight
+```
+
+### Dry-run Mode
+
+Test what changes would be made without actually applying them:
+
+```bash
+just dryrun
+```
+
+Or using ansible-playbook directly:
+
+```bash
+ansible-playbook -i inventory.ini playbook.yml --check --tags setup
+```
+
+### Logging
+
+All playbook runs now generate timestamped log files in the `logs/` directory for troubleshooting and audit purposes. Log files are automatically created with names like:
+
+- `logs/ansible-setup-20240101-120000.log`
+- `logs/ansible-dryrun-20240101-120000.log`
+- `logs/ansible-preflight-20240101-120000.log`
 
 ## Troubleshooting
 

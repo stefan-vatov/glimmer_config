@@ -15,8 +15,7 @@
         - git
         - curl
         - ansible
-      tags: always
-
+      tags: [always, preflight]
     - name: Report missing dependencies
       ansible.builtin.fail:
         msg: |
@@ -26,7 +25,29 @@
           - For Ansible: pip install ansible
       when: item.rc != 0
       loop: "{{ cmd_check.results }}"
-      tags: always
+      tags: [always, preflight]
+    - name: Check for Xcode Command Line Tools
+      ansible.builtin.command: xcode-select -p
+      register: xcode_check
+      failed_when: false
+      changed_when: false
+      tags: [always, preflight]
+    - name: Fail if Xcode Command Line Tools missing
+      ansible.builtin.fail:
+        msg: "Xcode Command Line Tools not installed. Run: xcode-select --install"
+      when: xcode_check.rc != 0
+      tags: [always, preflight]
+    - name: Check Python community.general module
+      ansible.builtin.command: python3 -c "import ansible_collections.community.general"
+      register: python_modules_check
+      failed_when: false
+      changed_when: false
+      tags: [always, preflight]
+    - name: Fail if required Python modules missing
+      ansible.builtin.fail:
+        msg: "Missing community.general collection. Run: just install-collections"
+      when: python_modules_check.rc != 0
+      tags: [always, preflight]
 
   roles:
     - { role: homebrew_packages, tags: [setup] }

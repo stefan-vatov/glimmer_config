@@ -1,0 +1,65 @@
+---
+- name: Check for code-insiders command
+  ansible.builtin.command: which code-insiders
+  register: config_vscode_check
+  failed_when: false
+  changed_when: false
+  tags: [always, preflight]
+- name: Fail if code-insiders not found
+  ansible.builtin.fail:
+    msg: code-insiders command not found. Install Visual Studio Code Insiders first.
+  when: config_vscode_check.rc != 0
+  tags: [always, preflight]
+- name: Check for font files in role
+  ansible.builtin.find:
+    paths: "{{ role_path }}/files/FiraCode"
+    patterns: "*"
+  register: config_font_files_check
+  tags: [always, preflight]
+- name: Fail if no font files found
+  ansible.builtin.fail:
+    msg: No font files found in {{ role_path }}/files/FiraCode
+  when: config_font_files_check.files | length == 0
+  tags: [always, preflight]
+- name: Check write permissions to font directory
+  ansible.builtin.file:
+    path: "{{ ansible_env.HOME }}/Library/Fonts/.ansible_write_test"
+    state: touch
+    mode: "0644"
+  register: config_font_write_test
+  failed_when: false
+  tags: [always, preflight]
+- name: Clean up font write test file
+  ansible.builtin.file:
+    path: "{{ ansible_env.HOME }}/Library/Fonts/.ansible_write_test"
+    state: absent
+  when: config_font_write_test is succeeded
+  tags: [always, preflight]
+- name: Fail if font directory not writable
+  ansible.builtin.fail:
+    msg: "Cannot write to font directory: {{ ansible_env.HOME }}/Library/Fonts"
+  when: config_font_write_test is failed
+  tags: [always, preflight]
+- name: Check for VS Code config source files
+  ansible.builtin.stat:
+    path: "{{ ansible_env.HOME }}/.code"
+  register: config_vscode_config_check
+  tags: [always, preflight]
+- name: Warn if VS Code config source missing
+  ansible.builtin.debug:
+    msg: "Warning: ~/.code directory not found. VS Code configuration may not work properly."
+  when: not config_vscode_config_check.stat.exists
+  tags: [always, preflight]
+- name: Test network connectivity for VS Code extensions
+  ansible.builtin.uri:
+    url: https://marketplace.visualstudio.com
+    method: HEAD
+    timeout: 10
+  register: config_marketplace_check
+  failed_when: false
+  tags: [always, preflight]
+- name: Warn if VS Code marketplace not accessible
+  ansible.builtin.debug:
+    msg: "Warning: Cannot reach VS Code marketplace. Extension installation may fail."
+  when: config_marketplace_check.status is not defined or config_marketplace_check.status != 200
+  tags: [always, preflight]

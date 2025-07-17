@@ -4,6 +4,11 @@
 ### Ansible ###
 *.retry
 
+# Ansible logs
+/logs/
+*.ansible.log
+ansible-*.log
+
 ### Emacs ###
 # -*- mode: gitignore; -*-
 *~
