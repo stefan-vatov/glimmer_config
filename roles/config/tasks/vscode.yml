@@ -75,7 +75,7 @@
     - iulian-radu-at.find-unused-exports
     - continue.continue
     - esbenp.prettier-vscode
-    - sglza.flexoki
+    - one-hunter
   when: not ansible_check_mode
   register: vscode_extension_result
   failed_when: false
