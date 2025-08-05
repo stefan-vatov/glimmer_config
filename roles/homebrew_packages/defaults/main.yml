@@ -37,6 +37,7 @@ homebrew_packages_list:
   - espanso
   - deskpad
   - gitui
+  - helix
 
 cask_packages:
   - alacritty
@@ -45,6 +46,7 @@ cask_packages:
   - homebrew/cask-versions/visual-studio-code-insiders
   - hiddenbar
   - ghostty
+  - iina
 
 homebrew_taps:
   - d12frosted/emacs-plus
