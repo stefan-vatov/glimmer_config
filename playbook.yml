@@ -37,18 +37,6 @@
         msg: "Xcode Command Line Tools not installed. Run: xcode-select --install"
       when: xcode_check.rc != 0
       tags: [always, preflight]
-    - name: Check Python community.general module
-      ansible.builtin.command: python3 -c "import ansible_collections.community.general"
-      register: python_modules_check
-      failed_when: false
-      changed_when: false
-      tags: [always, preflight]
-    - name: Fail if required Python modules missing
-      ansible.builtin.fail:
-        msg: "Missing community.general collection. Run: just install-collections"
-      when: python_modules_check.rc != 0
-      tags: [always, preflight]
-
   roles:
     - { role: homebrew_packages, tags: [setup] }
     - { role: dotfiles }
