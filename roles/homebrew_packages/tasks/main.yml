@@ -68,11 +68,3 @@
   tags:
     - setup
     - skip_ansible_lint
-
-- name: Install emacs-plus with native-comp
-  ansible.builtin.command: brew install emacs-plus --with-native-comp
-  become: false
-  changed_when: false
-  when: not ansible_check_mode
-  tags:
-    - setup

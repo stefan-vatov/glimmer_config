@@ -2,7 +2,6 @@
 homebrew_packages_list:
   - fd
   - difftastic
-  - ddosify/tap/ddosify
   - just
   - tree
   - nvim
@@ -38,16 +37,17 @@ homebrew_packages_list:
   - deskpad
   - gitui
   - helix
+  - deno
 
 cask_packages:
   - alacritty
   - amethyst
   - handbrake
-  - homebrew/cask-versions/visual-studio-code-insiders
+  - visual-studio-code@insiders
   - hiddenbar
   - ghostty
   - iina
+  - zed
 
 homebrew_taps:
-  - d12frosted/emacs-plus
   - espanso/espanso
