@@ -38,6 +38,7 @@ homebrew_packages_list:
   - gitui
   - helix
   - deno
+  - pearcleaner
 
 cask_packages:
   - alacritty
