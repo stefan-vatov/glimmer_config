@@ -39,6 +39,7 @@ homebrew_packages_list:
   - helix
   - deno
   - pearcleaner
+  - bruno
 
 cask_packages:
   - alacritty
