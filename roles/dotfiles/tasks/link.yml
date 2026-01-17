@@ -33,6 +33,7 @@
     mode: "0600"
     marker: "# {mark} Legacy config - Managed by Ansible - Do not modify this line"
   loop: "{{ dotfiles_legacy_files }}"
+  when: item | regex_search('\\.gitconfig_legacy$') is none
   tags:
     - setup
 
@@ -44,6 +45,19 @@
     block: source {{ item }}
     marker: "# {mark} SV config - Managed by Ansible - Do not modify this line"
   loop: "{{ dotfiles_sv_files }}"
+  when: item | regex_search('\\.gitconfig_sv$') is none
+  tags:
+    - setup
+
+- name: Source .gitconfig legacy the right way
+  ansible.builtin.blockinfile:
+    path: "{{ ansible_facts.env.HOME }}/.gitconfig"
+    mode: "0600"
+    create: true
+    block: |
+      [include]
+        path = .gitconfig_legacy
+    marker: "# {mark} Legacy config - Managed by Ansible - Do not modify this line"
   tags:
     - setup
 
