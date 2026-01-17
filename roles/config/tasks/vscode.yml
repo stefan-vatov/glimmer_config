@@ -23,6 +23,16 @@
     - setup
     - vscode
 
+- name: Ensure Visual Studio Code Insiders user directory exists
+  ansible.builtin.file:
+    path: "{{ ansible_facts.env.HOME }}/Library/Application Support/Code - Insiders/User"
+    state: directory
+    mode: "0755"
+  failed_when: false
+  tags:
+    - setup
+    - vscode
+
 - name: Create symlinks for Visual Studio Code configuration files
   ansible.builtin.file:
     src: "{{ item.item.src }}"
@@ -31,6 +41,7 @@
     force: true
   loop: "{{ vscode_config_sources.results }}"
   when: item.stat.exists
+  failed_when: false
   tags:
     - setup
     - vscode
