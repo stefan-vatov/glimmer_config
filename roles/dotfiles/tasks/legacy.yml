@@ -1,14 +1,14 @@
 ---
 - name: Check for existing dotfiles
   ansible.builtin.stat:
-    path: "{{ ansible_env.HOME }}/{{ item }}"
+    path: "{{ ansible_facts.env.HOME }}/{{ item }}"
   register: dotfiles_status
   loop: "{{ dotfiles_list }}"
   tags: setup
 
 - name: Check if dotfiles are managed by Ansible
   ansible.builtin.slurp:
-    src: "{{ ansible_env.HOME }}/{{ item.item }}"
+    src: "{{ ansible_facts.env.HOME }}/{{ item.item }}"
   register: dotfiles_file_contents
   loop: "{{ dotfiles_status.results }}"
   when: item.stat.exists

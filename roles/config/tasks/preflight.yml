@@ -23,7 +23,7 @@
   tags: [always, preflight]
 - name: Check write permissions to font directory
   ansible.builtin.file:
-    path: "{{ ansible_env.HOME }}/Library/Fonts/.ansible_write_test"
+    path: "{{ ansible_facts.env.HOME }}/Library/Fonts/.ansible_write_test"
     state: touch
     mode: "0644"
   register: config_font_write_test
@@ -31,18 +31,18 @@
   tags: [always, preflight]
 - name: Clean up font write test file
   ansible.builtin.file:
-    path: "{{ ansible_env.HOME }}/Library/Fonts/.ansible_write_test"
+    path: "{{ ansible_facts.env.HOME }}/Library/Fonts/.ansible_write_test"
     state: absent
   when: config_font_write_test is succeeded
   tags: [always, preflight]
 - name: Fail if font directory not writable
   ansible.builtin.fail:
-    msg: "Cannot write to font directory: {{ ansible_env.HOME }}/Library/Fonts"
+    msg: "Cannot write to font directory: {{ ansible_facts.env.HOME }}/Library/Fonts"
   when: config_font_write_test is failed
   tags: [always, preflight]
 - name: Check for VS Code config source files
   ansible.builtin.stat:
-    path: "{{ ansible_env.HOME }}/.code"
+    path: "{{ ansible_facts.env.HOME }}/.code"
   register: config_vscode_config_check
   tags: [always, preflight]
 - name: Warn if VS Code config source missing

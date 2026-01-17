@@ -1,7 +1,7 @@
 ---
 - name: Check for existing dotfiles
   ansible.builtin.stat:
-    path: "{{ ansible_env.HOME }}/{{ item }}"
+    path: "{{ ansible_facts.env.HOME }}/{{ item }}"
   register: dotfiles_dotfiles_status
   loop: "{{ dotfiles_list }}"
   tags:
@@ -9,7 +9,7 @@
 
 - name: Check if dotfiles are managed by Ansible
   ansible.builtin.slurp:
-    src: "{{ ansible_env.HOME }}/{{ item.item }}"
+    src: "{{ ansible_facts.env.HOME }}/{{ item.item }}"
   register: dotfiles_managed_file_contents
   loop: "{{ dotfiles_dotfiles_status.results }}"
   when: item.stat.exists
@@ -32,10 +32,10 @@
 
 - name: Unstow dotfiles
   ansible.builtin.command:
-    cmd: stow -t {{ ansible_env.HOME }} -d {{ ansible_env.HOME }}/.dotfiles/sv -D . --ignore='.DS_Store'
-    chdir: "{{ ansible_env.HOME }}"
+    cmd: stow -t {{ ansible_facts.env.HOME }} -d {{ ansible_facts.env.HOME }}/.dotfiles/sv -D . --ignore='.DS_Store'
+    chdir: "{{ ansible_facts.env.HOME }}"
   args:
-    chdir: "{{ ansible_env.HOME }}"
+    chdir: "{{ ansible_facts.env.HOME }}"
   register: dotfiles_unstow_result
   failed_when: dotfiles_unstow_result.rc not in [0, 1, 13]
   when: not ansible_check_mode
@@ -45,7 +45,7 @@
 
 - name: Find all _sv files in the home folder
   ansible.builtin.find:
-    paths: "{{ ansible_env.HOME }}"
+    paths: "{{ ansible_facts.env.HOME }}"
     patterns: .*_sv
     file_type: any
     hidden: true
@@ -63,13 +63,13 @@
 
 - name: Remove dotfiles directory
   ansible.builtin.file:
-    path: "{{ ansible_env.HOME }}/.dotfiles/sv"
+    path: "{{ ansible_facts.env.HOME }}/.dotfiles/sv"
     state: absent
   tags:
     - revert_dotfiles
 
 - name: Find all _legacy files in the home folder
-  ansible.builtin.shell: find {{ ansible_env.HOME }} -maxdepth 1 -type f -name '*_legacy'
+  ansible.builtin.shell: find {{ ansible_facts.env.HOME }} -maxdepth 1 -type f -name '*_legacy'
   register: dotfiles_legacy_files_result
   tags:
     - revert_dotfiles

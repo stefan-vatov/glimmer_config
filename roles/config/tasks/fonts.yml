@@ -20,7 +20,7 @@
 - name: Copy each file to the remote destination
   ansible.builtin.copy:
     src: "{{ item.path }}"
-    dest: "{{ ansible_env.HOME }}/Library/Fonts/FiraCode/{{ item.path | basename }}"
+    dest: "{{ ansible_facts.env.HOME }}/Library/Fonts/FiraCode/{{ item.path | basename }}"
   loop: "{{ files_to_copy.files }}"
   tags:
     - setup

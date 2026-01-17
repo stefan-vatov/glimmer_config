@@ -1,7 +1,7 @@
 ---
 - name: Set the dotfiles repository folder
   ansible.builtin.set_fact:
-    dotfiles_repo: "{{ ansible_env.HOME }}/.dotfiles/sv"
+    dotfiles_repo: "{{ ansible_facts.env.HOME }}/.dotfiles/sv"
   tags:
     - setup
 
@@ -44,7 +44,7 @@
 
 - name: Use GNU Stow to link dotfiles
   ansible.builtin.command:
-    cmd: stow -t {{ ansible_env.HOME }} -d {{ ansible_env.HOME }}/.dotfiles/sv -R . --ignore='.DS_Store'
+    cmd: stow -t {{ ansible_facts.env.HOME }} -d {{ ansible_facts.env.HOME }}/.dotfiles/sv -R . --ignore='.DS_Store'
   become: false
   tags:
     - setup
@@ -52,14 +52,14 @@
 
 - name: Check for existing dotfiles
   ansible.builtin.stat:
-    path: "{{ ansible_env.HOME }}/{{ item }}"
+    path: "{{ ansible_facts.env.HOME }}/{{ item }}"
   register: dotfiles_dotfiles_status
   loop: "{{ dotfiles_list }}"
   tags: setup
 
 - name: Check if dotfiles are managed by Ansible
   ansible.builtin.slurp:
-    src: "{{ ansible_env.HOME }}/{{ item.item }}"
+    src: "{{ ansible_facts.env.HOME }}/{{ item.item }}"
   register: dotfiles_file_contents
   loop: "{{ dotfiles_dotfiles_status.results }}"
   when: item.stat.exists

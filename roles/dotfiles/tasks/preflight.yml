@@ -31,7 +31,7 @@
   tags: [always, preflight]
 - name: Check write permissions to home directory
   ansible.builtin.file:
-    path: "{{ ansible_env.HOME }}/.ansible_write_test"
+    path: "{{ ansible_facts.env.HOME }}/.ansible_write_test"
     state: touch
     mode: "0600"
   register: dotfiles_home_write_test
@@ -39,13 +39,13 @@
   tags: [always, preflight]
 - name: Clean up write test file
   ansible.builtin.file:
-    path: "{{ ansible_env.HOME }}/.ansible_write_test"
+    path: "{{ ansible_facts.env.HOME }}/.ansible_write_test"
     state: absent
   when: dotfiles_home_write_test is succeeded
   tags: [always, preflight]
 - name: Fail if home directory not writable
   ansible.builtin.fail:
-    msg: "Cannot write to home directory: {{ ansible_env.HOME }}"
+    msg: "Cannot write to home directory: {{ ansible_facts.env.HOME }}"
   when: dotfiles_home_write_test is failed
   tags: [always, preflight]
 - name: Test network connectivity to GitHub
