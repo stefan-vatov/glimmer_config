@@ -24,11 +24,43 @@
     - setup
     - skip_ansible_lint
 
+- name: Determine Homebrew prefix
+  ansible.builtin.command:
+    cmd: brew --prefix
+  register: homebrew_packages_prefix
+  changed_when: false
+  failed_when: false
+  tags:
+    - setup
+
+- name: Check if Homebrew prefix is writable
+  ansible.builtin.stat:
+    path: "{{ homebrew_packages_prefix.stdout | trim }}"
+  register: homebrew_packages_prefix_stat
+  when: homebrew_packages_prefix.rc == 0 and (homebrew_packages_prefix.stdout | trim) != ""
+  tags:
+    - setup
+
+- name: Set Homebrew writable flag
+  ansible.builtin.set_fact:
+    homebrew_packages_prefix_writable: "{{ homebrew_packages_prefix_stat.stat.writeable | default(false) }}"
+  when: homebrew_packages_prefix_stat is defined
+  tags:
+    - setup
+
+- name: Warn when Homebrew prefix is not writable
+  ansible.builtin.debug:
+    msg: "Homebrew prefix {{ homebrew_packages_prefix.stdout | trim }} is not writable for this user; skipping Homebrew taps/packages/casks."
+  when: homebrew_packages_prefix.rc == 0 and not (homebrew_packages_prefix_writable | default(false))
+  tags:
+    - setup
+
 - name: Tap taps
   ansible.builtin.command:
     cmd: brew tap {{ item }}
   loop: "{{ homebrew_taps }}"
   changed_when: false
+  when: homebrew_packages_prefix_writable | default(false)
   tags:
     - setup
 
@@ -47,6 +79,7 @@
     index_var: pkg_index
   become: false
   register: homebrew_packages_pkg_result
+  when: homebrew_packages_prefix_writable | default(false)
   tags:
     - setup
 
@@ -56,7 +89,7 @@
   loop: "{{ homebrew_packages_list }}"
   loop_control:
     index_var: pkg_index
-  when: homebrew_packages_pkg_result is not defined or homebrew_packages_pkg_result.changed
+  when: (homebrew_packages_prefix_writable | default(false)) and (homebrew_packages_pkg_result is not defined or homebrew_packages_pkg_result.changed)
   tags:
     - setup
 
@@ -64,7 +97,7 @@
   ansible.builtin.shell:
     cmd: brew install --cask --force {{ item }}
   loop: "{{ cask_packages }}"
-  when: not ansible_check_mode
+  when: not ansible_check_mode and (homebrew_packages_prefix_writable | default(false))
   tags:
     - setup
     - skip_ansible_lint
